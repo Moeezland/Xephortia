@@ -117,10 +117,43 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  // ✅ user is logged in, continue normally
-
+  // ✅ user is logged in, now verify citizen allowlist
   const container = document.getElementById("mainContainer");
   const loading = document.getElementById("loading");
+
+  const citizenEmail = user.email;
+
+  if (!citizenEmail) {
+    loading.style.display = "none";
+    container.innerHTML = `
+      <div class="card">
+        <div class="card-body text-center">
+          <h2 class="card-title text-danger">Access Denied</h2>
+          <p>Your account does not have an email attached.</p>
+          <p>Please sign in with an approved Google or Microsoft account.</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const citizenRef = doc(db, "citizens", citizenEmail);
+  const citizenSnap = await getDoc(citizenRef);
+
+  if (!citizenSnap.exists()) {
+    loading.style.display = "none";
+    container.innerHTML = `
+      <div class="card">
+        <div class="card-body text-center">
+          <h2 class="card-title text-danger">Access Denied</h2>
+          <p>This email is not registered as an approved citizen voter.</p>
+          <p><strong>${citizenEmail}</strong></p>
+          <p class="text-muted">Please contact the Election Administration.</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
 
   const docRef = doc(db, "activeElection", "current");
   const docSnap = await getDoc(docRef);
