@@ -31,5 +31,5 @@ export async function loginWithMicrosoft() {
   const provider = new OAuthProvider("microsoft.com");
   await signInWithPopup(auth, provider);
 
-  window.location.href = "index.html";
+  window.location.href = "portal.html";
 }
