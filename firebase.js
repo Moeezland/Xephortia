@@ -23,7 +23,7 @@ export async function loginWithGoogle() {
   const provider = new GoogleAuthProvider();
   await signInWithPopup(auth, provider);
 
-  window.location.href = "index.html";
+  window.location.href = "portal.html";
 }
 
 // 🔵 MICROSOFT LOGIN
